@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Activity,
   AlertTriangle,
@@ -31,6 +31,74 @@ function formatLaunchTime(value) {
   }).toUpperCase();
 }
 
+
+function getCountdown(value, now) {
+  if (!value) return { state: "unknown", label: "NOT ANNOUNCED", parts: null };
+
+  const target = new Date(value).getTime();
+  if (!Number.isFinite(target)) return { state: "unknown", label: "TIME UNAVAILABLE", parts: null };
+
+  const difference = target - now;
+  if (difference <= 0) return { state: "elapsed", label: "SCHEDULED TIME PASSED", parts: null };
+
+  const totalSeconds = Math.floor(difference / 1000);
+  return {
+    state: "counting",
+    label: "T− COUNTDOWN",
+    parts: {
+      days: Math.floor(totalSeconds / 86400),
+      hours: Math.floor((totalSeconds % 86400) / 3600),
+      minutes: Math.floor((totalSeconds % 3600) / 60),
+      seconds: totalSeconds % 60,
+    },
+  };
+}
+
+function Countdown({ launch }) {
+  const [now, setNow] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  const countdown = getCountdown(launch?.launch_time, now);
+  const launchName = launch?.name || "NO MISSION SELECTED";
+
+  return (
+    <section className={`countdown-panel countdown-${countdown.state}`} aria-live="polite">
+      <div className="countdown-label">
+        <span className="countdown-icon"><Activity size={16} /></span>
+        <div>
+          <span className="countdown-kicker">NEXT MISSION WINDOW</span>
+          <strong>{countdown.label}</strong>
+        </div>
+        <span className="countdown-live"><i /> LIVE</span>
+      </div>
+      {countdown.parts ? (
+        <div className="countdown-clock" aria-label={`${countdown.parts.days} days, ${countdown.parts.hours} hours, ${countdown.parts.minutes} minutes, ${countdown.parts.seconds} seconds`}>
+          {[
+            ["DAYS", countdown.parts.days],
+            ["HRS", countdown.parts.hours],
+            ["MIN", countdown.parts.minutes],
+            ["SEC", countdown.parts.seconds],
+          ].map(([label, value]) => (
+            <div className="countdown-unit" key={label}>
+              <strong>{String(value).padStart(2, "0")}</strong>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="countdown-fallback">{countdown.state === "elapsed" ? "The scheduled launch time has passed." : "Search for a mission with a valid scheduled launch time."}</div>
+      )}
+      <div className="countdown-mission">
+        <span className="countdown-mission-name" title={launchName}>{launchName}</span>
+        <span>{launch?.launch_time ? formatLaunchTime(launch.launch_time) : "AWAITING MISSION DATA"}</span>
+      </div>
+    </section>
+  );
+}
 function Panel({ title, index, status, children, className = "" }) {
   return (
     <section className={`hud-panel ${className}`}>
@@ -164,6 +232,7 @@ export default function App() {
         </aside>
 
         <section className="center-column">
+          <Countdown launch={selected} />
           <div className="radar-panel">
             <div className="radar-topline"><span><Crosshair size={14} /> TACTICAL TRACKING ARRAY</span><span className="radar-coords">34°12'08"N / 118°19'16"W</span></div>
             <div className="radar-wrap">
