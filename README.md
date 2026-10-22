@@ -23,7 +23,6 @@
 
 *T-Minus brings a mission-control aesthetic to rocket-launch discovery, combining a tactical dashboard interface with launch data from the Space Devs Launch Library 2 API.*
 
-> **Note:** Add your actual dashboard screenshot at `docs/screenshots/dashboard.png` for the preview to appear.
 
 ## ✨ Features
 
