@@ -62,14 +62,19 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    
     # CORS configuration
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=settings.CORS_ORIGINS,
+        allow_origins=[
+            "http://localhost:5173",
+            "https://t-minus-one.vercel.app",
+        ],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
 
     # Domain Exception Handlers
     app.add_exception_handler(AerospaceAPIException, aerospace_exception_handler)
