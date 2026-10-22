@@ -44,14 +44,14 @@ graph TD
     Fallback["Resilient Curated Store<br/>(Offline / Rate-Limit Fallback)"]
     LL2["Launch Library 2 API<br/>(Space Devs Telemetry)"]
 
-    Client -->|REST JSON / Hotkeys| API
-    API -->|1. Check Cache| Cache
-    Cache -->|Cache Hit (Sub-5ms)| API
-    Cache -->|Cache Miss| LL2
-    LL2 -->|HTTP 200 OK| Cache
-    LL2 -.->|HTTP 429 / Timeout| Fallback
-    Fallback -->|Graceful Degradation| API
-    API -->|Typed Pydantic V2 Schemas| Client
+    Client -->|"REST JSON / Hotkeys"| API
+    API -->|"1. Check Cache"| Cache
+    Cache -->|"Cache Hit - Sub-5ms"| API
+    Cache -->|"Cache Miss"| LL2
+    LL2 -->|"HTTP 200 OK"| Cache
+    LL2 -.->|"HTTP 429 / Timeout"| Fallback
+    Fallback -->|"Graceful Degradation"| API
+    API -->|"Typed Pydantic V2 Schemas"| Client
 ```
 
 ---
