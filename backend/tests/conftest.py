@@ -1,3 +1,11 @@
+import sys
+from pathlib import Path
+
+# Ensure backend root is on sys.path across all platforms
+BACKEND_DIR = Path(__file__).resolve().parent.parent
+if str(BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(BACKEND_DIR))
+
 import pytest
 from starlette.testclient import TestClient
 from app.main import app
