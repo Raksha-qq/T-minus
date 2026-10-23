@@ -29,9 +29,12 @@ a { color: inherit; text-decoration: none; }
 .ambient-grid { position: fixed; z-index: -1; inset: 0; pointer-events: none; opacity: .16; background-image: linear-gradient(rgba(31, 159, 171, .12) 1px, transparent 1px), linear-gradient(90deg, rgba(31, 159, 171, .12) 1px, transparent 1px); background-size: 42px 42px; mask-image: linear-gradient(to bottom, black, transparent 90%); }
 .scanline { position: fixed; z-index: 10; top: 0; left: 0; right: 0; height: 1px; background: rgba(60, 244, 255, .18); box-shadow: 0 0 12px rgba(60, 244, 255, .16); pointer-events: none; }
 .topbar { height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 24px; border-bottom: 1px solid rgba(34, 179, 191, .26); }
-.brand { display: flex; align-items: center; gap: 12px; min-width: 260px; }
-.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; color: var(--cyan-bright); border: 1px solid var(--cyan-line); background: rgba(11, 67, 74, .18); clip-path: polygon(0 0, 75% 0, 100% 25%, 100% 100%, 25% 100%, 0 75%); }
-.brand-name { display: block; font: 700 27px/.9 var(--display); letter-spacing: 2px; color: #e6f9fa; }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 260px; background: transparent; border: none; padding: 0; text-align: left; cursor: pointer; color: inherit; transition: opacity .18s ease; }
+.brand:hover { opacity: .92; }
+.brand:hover .brand-mark { border-color: var(--cyan); background: rgba(11, 67, 74, .32); box-shadow: 0 0 12px rgba(78, 222, 237, .25); }
+.brand:hover .brand-name { color: var(--cyan-bright); }
+.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; color: var(--cyan-bright); border: 1px solid var(--cyan-line); background: rgba(11, 67, 74, .18); clip-path: polygon(0 0, 75% 0, 100% 25%, 100% 100%, 25% 100%, 0 75%); transition: all .2s ease; }
+.brand-name { display: block; font: 700 27px/.9 var(--display); letter-spacing: 2px; color: #e6f9fa; transition: color .2s ease; }
 .brand-period { color: var(--cyan); }
 .brand-subtitle { display: block; margin-top: 6px; color: #62848a; font: 9px var(--mono); letter-spacing: 1.45px; }
 .navigation { display: flex; align-items: center; gap: clamp(18px, 3vw, 48px); height: 100%; color: #66858a; font: 10px var(--mono); letter-spacing: 1.15px; }

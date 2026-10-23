@@ -19,7 +19,15 @@ export function TopBar({
 
   return (
     <header className="topbar">
-      <div className="brand" role="banner">
+      <button
+        className="brand"
+        onClick={() => {
+          hudAudio.playClick();
+          onTabChange("command");
+        }}
+        title="Go to Command Dashboard"
+        aria-label="T-Minus Logo - Return to Command Dashboard"
+      >
         <span className="brand-mark">
           <Crosshair size={23} strokeWidth={1.5} />
         </span>
@@ -29,7 +37,7 @@ export function TopBar({
           </span>
           <span className="brand-subtitle">AEROSPACE INTELLIGENCE DIVISION</span>
         </span>
-      </div>
+      </button>
 
       <nav className="navigation" aria-label="Main navigation">
         {tabs.map((tab) => {
