@@ -3,9 +3,10 @@
  * Communicates with the FastAPI Mission Control backend.
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const rawUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+const BASE_URL = rawUrl.replace(/\/+$/, "");
 
-async function request(path, params = {}) {
+async function request(path, params = {}, timeoutMs = 60000) {
   const url = new URL(path, BASE_URL);
   Object.entries(params).forEach(([key, val]) => {
     if (val !== undefined && val !== null && val !== "") {
@@ -14,7 +15,7 @@ async function request(path, params = {}) {
   });
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 12000);
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
   try {
     const response = await fetch(url.toString(), {

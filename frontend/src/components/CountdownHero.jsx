@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Activity, Bookmark, BookmarkCheck, ExternalLink, Radio } from "lucide-react";
+import { Activity, Bookmark, BookmarkCheck, ExternalLink } from "lucide-react";
 import { formatLaunchTime, getCountdown } from "../utils/formatters";
 import { hudAudio } from "../utils/audio";
 

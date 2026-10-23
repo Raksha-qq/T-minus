@@ -1,3 +1,4 @@
+import asyncio
 from contextlib import asynccontextmanager
 import logging
 from fastapi import FastAPI
@@ -19,12 +20,16 @@ logger = logging.getLogger("t_minus.api")
 async def lifespan(app: FastAPI):
     """Application lifespan context for startup prefetching and graceful shutdown."""
     logger.info("Initializing T-Minus Mission Control API...")
-    # Pre-warm telemetry cache with upcoming launches on startup
-    try:
-        await space_service.get_launches(limit=12)
-        logger.info("Telemetry cache pre-warmed successfully.")
-    except Exception as exc:
-        logger.warning("Cache pre-warming notice: %s", exc)
+
+    # Pre-warm telemetry cache in background task so server binds port immediately
+    async def _prewarm():
+        try:
+            await space_service.get_launches(limit=12)
+            logger.info("Telemetry cache pre-warmed successfully.")
+        except Exception as exc:
+            logger.warning("Cache pre-warming notice: %s", exc)
+
+    asyncio.create_task(_prewarm())
 
     yield
 
@@ -62,14 +67,19 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
-    
-    # CORS configuration
+    # CORS configuration supporting production, preview Vercel domains, and local dev
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[
             "http://localhost:5173",
+            "http://127.0.0.1:5173",
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            "http://localhost:4173",
+            "http://127.0.0.1:4173",
             "https://t-minus-one.vercel.app",
         ],
+        allow_origin_regex=r"^https:\/\/.*\.vercel\.app$",
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

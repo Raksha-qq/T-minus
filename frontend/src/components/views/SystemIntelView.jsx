@@ -1,14 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   Activity,
-  CheckCircle2,
   Cpu,
   Database,
   ExternalLink,
   Layers,
   RefreshCw,
   Server,
-  ShieldCheck,
   Zap,
 } from "lucide-react";
 import { api } from "../../services/api";
@@ -20,7 +18,7 @@ export function SystemIntelView() {
   const [loading, setLoading] = useState(true);
   const [lastRefreshed, setLastRefreshed] = useState(null);
 
-  async function loadDiagnostics() {
+  const loadDiagnostics = useCallback(async () => {
     setLoading(true);
     try {
       const [hData, sData] = await Promise.all([
@@ -33,10 +31,25 @@ export function SystemIntelView() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
-    loadDiagnostics();
+    let active = true;
+    Promise.all([
+      api.getHealth().catch(() => null),
+      api.getStats().catch(() => null),
+    ]).then(([hData, sData]) => {
+      if (active) {
+        setHealth(hData);
+        setStats(sData);
+        setLastRefreshed(new Date().toLocaleTimeString());
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (

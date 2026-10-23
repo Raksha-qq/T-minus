@@ -1,4 +1,4 @@
-import { Bookmark, Trash2, Download, ExternalLink, Rocket, MapPin, Calendar, Radio } from "lucide-react";
+import { Bookmark, Trash2, Download, ExternalLink, Rocket, MapPin, Calendar } from "lucide-react";
 import { formatLaunchTime, getStatusTheme } from "../../utils/formatters";
 import { hudAudio } from "../../utils/audio";
 
